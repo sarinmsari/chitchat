@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
+import './App.css';
 
 import firebase from "firebase/app";
 import "firebase/firestore";
@@ -24,7 +25,10 @@ function App() {
 
   return (
     <div className="App">
-      <SignOut />
+      <header>
+        <h1>ChitChat 💬</h1>
+        <SignOut />
+      </header>
       <section>{user ? <ChatRoom /> : <SignIn />}</section>
     </div>
   );
@@ -42,10 +46,14 @@ function SignIn() {
   );
 }
 function SignOut() {
-  return auth.currentUser && (
+  return (
+    auth.currentUser && (
       <div>
-        <button onClick={() => auth.signOut()}>SignOut</button>
+        <button className="signOutBtn" onClick={() => auth.signOut()}>
+          SignOut
+        </button>
       </div>
+    )
   );
 }
 function ChatRoom() {
@@ -81,11 +89,11 @@ function ChatRoom() {
 
   return (
     <div>
-      <div>
+      <main>
         {messages &&
           messages.map((msg) => <ChatMessage key={msg.id} message={msg} />)}
         <span ref={dummy}></span>
-      </div>
+      </main>
       <form onSubmit={sendMessage}>
         <input
           value={formValue}
@@ -101,16 +109,18 @@ function ChatRoom() {
 }
 function ChatMessage(props) {
   const { user, body, uid, photoURL, createdAt } = props.message;
+
+  const messageClass = uid === auth.currentUser.uid ? "sent" : "received";
   return (
     <div>
-      <div>
+      <div className={`message ${messageClass}`}>
         <img
-          src={photoURL || "https://i.imgur.com/rFbS5ms.png"}
+          src={
+            photoURL ||
+            "https://i.pinimg.com/originals/3e/51/b7/3e51b7003375fb7e9e9c233a7f52c79e.png"
+          }
           alt="{user}'s pfp"
         />
-      </div>
-      <div>
-        <p>{user}</p>
         <p>{body}</p>
       </div>
     </div>
